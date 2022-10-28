@@ -11,10 +11,8 @@ public class App extends Application{
 																						
 		Controller controller = new Controller();
 		
-		Scene scene = new Scene(controller.getView());
-		
 		primaryStage.setTitle("Calculadora");
-		primaryStage.setScene(scene);
+		primaryStage.setScene(new Scene(controller.getView()));
 		primaryStage.show();
 		
 	}
