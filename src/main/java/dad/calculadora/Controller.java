@@ -55,7 +55,6 @@ public class Controller implements Initializable{
 	    	return view;
 	    }
 	 
-	 
 	 @FXML
 	    void onBorrarAction(ActionEvent event) {
 		 operando = 0.0;
