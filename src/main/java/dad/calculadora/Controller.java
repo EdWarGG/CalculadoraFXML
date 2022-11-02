@@ -15,7 +15,7 @@ import javafx.scene.layout.GridPane;
 public class Controller implements Initializable{
 
 	//model
-	Calculadora model = new Calculadora();
+	Model model = new Model();
 	
 	public static final char IGUAL = '='; 
 	public static final char SUMAR = '+'; 
@@ -23,11 +23,12 @@ public class Controller implements Initializable{
 	public static final char DIVIDIR = '/'; 
 	public static final char MULTIPLICAR = '*';
 	
-	private static final char COMA = '.'; 
-	
-	private Double operando;
 	private char operador;
-	private Boolean nuevoOperando;
+	private Boolean operacionOn;
+	private double num1;
+	private double num2;
+	private double result;
+
 	
 	//view
 	@FXML
@@ -45,75 +46,66 @@ public class Controller implements Initializable{
 		loader.load();
 	}
 	
-	 public void initialize(URL location, ResourceBundle resources) {    	
+	 public void initialize(URL location, ResourceBundle resources) {  
+		 
 		//bindings
 		model.pantallaProperty().bind(pantalla.textProperty());
-		
 	}
 	 
 	 public GridPane getView() {
 	    	return view;
 	    }
 	 
+	 //metodos
 	 @FXML
 	    void onBorrarAction(ActionEvent event) {
-		 operando = 0.0;
-			operador = '=';
-			onBorrarTodoAction(event);
+		 	if (pantalla.getText().length() != 0) {
+		 		pantalla.setText(pantalla.getText().substring(0, pantalla.getText().length() - 1));
+		 	}
 	    }
 
 	    @FXML
 	    void onBorrarTodoAction(ActionEvent event) {
-	    	nuevoOperando = true;
-			pantalla.setText("0.0");
+			pantalla.setText("");
+	 		operacionOn = true;
+
 	    }
 
 	    
 	    @FXML
 	    void onInsertarAction(ActionEvent event) {
-		    insertar(((Button) event.getSource()).getText().charAt(0));
+	    	pantalla.setText(pantalla.getText() + ((Button) event.getSource()).getText()); 	    	
+	 		operacionOn = true;
 	    }
-	    public void insertar(char digito) {
-			if (digito >= '0' && digito <= '9') {
-				if (nuevoOperando) {
-					nuevoOperando = false;
-					pantalla.setText("");;
-				}
-				pantalla.setText(pantalla.getText().concat(String.valueOf(digito)));
-			} else if (digito == COMA) {
-				insertarComa(COMA);
-			}
-		}
 
 	    @FXML
 	    void onInsertarComaAction(ActionEvent event) {
-	    	insertarComa(((Button) event.getSource()).getText().charAt(0));
-
+	    	pantalla.setText(pantalla.getText() + ((Button) event.getSource()).getText()); 
+	 		operacionOn = true;
 	    }
-	    private void insertarComa(char coma) {
-	    	if (!pantalla.getText().contains("" + COMA)) {
-				pantalla.setText(pantalla.getText() + COMA);
-			}
-	    }
-
 
 	    @FXML
 	    void onOperarAction(ActionEvent event) {
-		    operar(((Button) event.getSource()).getText().charAt(0));
-
+	    	if (operacionOn) {
+	    		num1 = Double.parseDouble(pantalla.getText());
+	    		pantalla.setText("");
+	    		operador = ((Button) event.getSource()).getText().charAt(0);
+		 		operacionOn = false;
+	    	}
+	    	
 	    }
-	    public void operar(char operador) {
-			nuevoOperando = true;
-			double operando2 = Double.parseDouble(pantalla.getText());
+	    
+	    public void onHacerOperacionAction() {
+    		num2 = Double.parseDouble(pantalla.getText());
+
 			switch (this.operador) {
-				case SUMAR: operando += operando2; break;
-				case RESTAR: operando -= operando2; break;
-				case MULTIPLICAR: operando *= operando2; break;
-				case DIVIDIR: operando /= operando2; break;
-				case IGUAL: operando = operando2; break;
+				case SUMAR: result = num1 += num2; pantalla.setText("" + result); break;
+				case RESTAR: result = num1 -= num2; pantalla.setText("" + result);  break;
+				case MULTIPLICAR: result = num1 *= num2; pantalla.setText("" + result);  break;
+				case DIVIDIR: result = num1 /= num2; pantalla.setText("" + result);  break;
+				case IGUAL: result = num1 = num2; pantalla.setText("" + result);  break;
 			}
-			this.operador = operador;
-			pantalla.setText("" + operando.toString());
+
 		}
 
 
